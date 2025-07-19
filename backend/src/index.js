@@ -5,6 +5,8 @@ require('dotenv').config();
 const authMiddleware = require('./middleware/authMiddleware');
 const authRoutes = require('./routes/auth');
 const expenseRoutes = require('./routes/expenses');
+const categoryRoutes = require('./routes/categories');
+
 
 const app = express();
 app.use(cors()); // to handel Cross Domain Requests
@@ -15,11 +17,11 @@ app.get('/api/test', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/categories', authMiddleware, categoryRoutes);
 app.use('/api/expenses', authMiddleware, expenseRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
 

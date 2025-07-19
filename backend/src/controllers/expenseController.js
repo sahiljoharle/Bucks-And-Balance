@@ -100,6 +100,42 @@ exports.deleteExpense = async (req, res) => {
   }
 };
 
+exports.getExpensesByCategory = async (req, res) => {
+  const userId = req.user.userId;
+  const { category_id } = req.params;
+  try {
+    const result = await pool.query(
+      `SELECT expenses.*, categories.name AS category_name
+       FROM expenses
+       LEFT JOIN categories ON expenses.category_id = categories.id
+       WHERE expenses.user_id = $1 AND expenses.category_id = $2
+       ORDER BY expenses.date DESC`,
+      [userId, category_id]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getExpenseSummaryByCategory = async (req, res) => {
+  const userId = req.user.userId;
+  try {
+    const result = await pool.query(
+      `SELECT categories.id, categories.name, SUM(expenses.amount) as total_spent, COUNT(expenses.id) as expense_count
+       FROM categories
+       LEFT JOIN expenses ON expenses.category_id = categories.id AND expenses.user_id = $1
+       WHERE categories.user_id = $1 OR categories.is_default = true
+       GROUP BY categories.id, categories.name
+       ORDER BY categories.name ASC`,
+      [userId]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 
 exports.testExpenseController = (req, res) => {
   res.json({ message: 'Expense controller is connected!' });
