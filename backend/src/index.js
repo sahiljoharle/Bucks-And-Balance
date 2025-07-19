@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
+const expenseRoutes = require('./routes/expenses');
 
 const app = express();
 app.use(cors()); // to handel Cross Domain Requests 
@@ -13,6 +14,7 @@ app.get('/api/test', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/expenses', expenseRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
