@@ -187,37 +187,28 @@ export default function LoginScreen() {
       console.log('API response:', data);
 
       if (response.ok) {
-        // Success - start the success animation sequence
-        Alert.alert(
-          'Success', 
-          isLogin ? 'Login successful!' : 'Account created successfully!',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                // Start the logo animation sequence
-                animationProgress.value = withTiming(1, { duration: 1200 });
-                
-                // Logo rotation on X axis and scale animation
-                logoRotationX.value = withSpring(360, { 
-                  damping: 15,
-                  stiffness: 100 
-                });
-                
-                logoScale.value = withTiming(8, { 
-                  duration: 1200 
-                }, () => {
-                  // Navigate after animation completes
-                  runOnJS(navigateToHome)();
-                });
-                
-                // Fade out form elements and title text
-                formOpacity.value = withTiming(0, { duration: 800 });
-                titleOpacity.value = withTiming(0, { duration: 600 });
-              }
-            }
-          ]
-        );
+        // Success - start the success animation sequence immediately
+        console.log('Login successful, starting animation...');
+        
+        // Start the logo animation sequence
+        animationProgress.value = withTiming(1, { duration: 1200 });
+        
+        // Logo rotation on X axis and scale animation
+        logoRotationX.value = withSpring(360, { 
+          damping: 15,
+          stiffness: 100 
+        });
+        
+        logoScale.value = withTiming(8, { 
+          duration: 1200 
+        }, () => {
+          // Navigate after animation completes
+          runOnJS(navigateToHome)();
+        });
+        
+        // Fade out form elements and title text
+        formOpacity.value = withTiming(0, { duration: 800 });
+        titleOpacity.value = withTiming(0, { duration: 600 });
       } else {
         // Error response from server
         const errorMessage = data.message || data.error || 'Something went wrong. Please try again.';
